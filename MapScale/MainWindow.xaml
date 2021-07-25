@@ -11,82 +11,66 @@
     DataContext="{Binding RelativeSource={RelativeSource Self}}"
     mc:Ignorable="d">
     <Window.Resources>
-        <x:Array x:Key="Points" Type="Point">
-            <Point X="100" Y="50" />
-            <Point X="200" Y="150" />
-            <Point X="50" Y="100" />
+        <x:Array x:Key="Points" Type="local:MapItem">
+            <local:MapItem
+                Scale="1"
+                X="200"
+                Y="150" />
+            <local:MapItem
+                Scale="1"
+                X="300"
+                Y="250" />
+            <local:MapItem
+                Scale="1"
+                X="150"
+                Y="200" />
         </x:Array>
-        <local:MultiDoubleConverter x:Key="MultiDoubleConverter" />
+        <local:MultiDoubleScaleConverter x:Key="MultiDoubleConverter" />
     </Window.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <ItemsControl
-            Name="ItemsControl"
-            ItemsSource="{Binding Mode=OneWay, Source={StaticResource Points}}"
-            MouseWheel="UIElement_OnMouseWheel">
-            <ItemsControl.Style>
-                <Style TargetType="ItemsControl">
-                    <Setter Property="Height">
-                        <Setter.Value>
-                            <MultiBinding Converter="{StaticResource MultiDoubleConverter}">
-                                <Binding Path="Height" />
-                                <Binding Path="Scale" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}" />
-                            </MultiBinding>
-                        </Setter.Value>
-                    </Setter>
-                    <Setter Property="Width">
-                        <Setter.Value>
-                            <MultiBinding Converter="{StaticResource MultiDoubleConverter}">
-                                <Binding Path="Width" />
-                                <Binding Path="Scale" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}" />
-                            </MultiBinding>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ItemsControl.Style>
-            <ItemsControl.RenderTransform>
-                <ScaleTransform />
-            </ItemsControl.RenderTransform>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="Point">
-                    <Ellipse
-                        Width="16"
-                        Height="16"
-                        Fill="Red" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Canvas>
-                        <Canvas.Background>
-                            <ImageBrush ImageSource="map.jpg" />
-                        </Canvas.Background>
-                    </Canvas>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemContainerStyle>
-                <Style TargetType="ContentPresenter">
-                    <Setter Property="Canvas.Top">
-                        <Setter.Value>
-                            <MultiBinding Converter="{StaticResource MultiDoubleConverter}">
-                                <Binding Path="Y" />
-                                <Binding Path="Scale" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}" />
-                            </MultiBinding>
-                        </Setter.Value>
-                    </Setter>
-                    <Setter Property="Canvas.Left">
-                        <Setter.Value>
-                            <MultiBinding Converter="{StaticResource MultiDoubleConverter}">
-                                <Binding Path="X" />
-                                <Binding Path="Scale" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}" />
-                            </MultiBinding>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ItemsControl.ItemContainerStyle>
-        </ItemsControl>
+        <Grid Name="MainContainer" MouseWheel="Grid_OnMouseWheel">
+            <ItemsControl Name="MapContainer" ItemsSource="{Binding Mode=OneWay, Source={StaticResource Points}}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="local:MapItem">
+                        <Ellipse
+                            Width="16"
+                            Height="16"
+                            Fill="Red">
+                            <Ellipse.RenderTransform>
+                                <ScaleTransform>
+                                    <ScaleTransform.ScaleX>
+                                        <MultiBinding Converter="{StaticResource MultiDoubleConverter}">
+                                            <Binding Path="Scale" />
+                                            <Binding Path="Scale" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}" />
+                                        </MultiBinding>
+                                    </ScaleTransform.ScaleX>
+                                    <ScaleTransform.ScaleY>
+                                        <MultiBinding Converter="{StaticResource MultiDoubleConverter}">
+                                            <Binding Path="Scale" />
+                                            <Binding Path="Scale" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Window}" />
+                                        </MultiBinding>
+                                    </ScaleTransform.ScaleY>
+                                </ScaleTransform>
+                            </Ellipse.RenderTransform>
+                        </Ellipse>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas>
+                            <Canvas.Background>
+                                <ImageBrush ImageSource="map.jpg" />
+                            </Canvas.Background>
+                        </Canvas>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                        <Setter Property="Canvas.Left" Value="{Binding X}" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+            </ItemsControl>
+        </Grid>
     </Grid>
 </Window>
