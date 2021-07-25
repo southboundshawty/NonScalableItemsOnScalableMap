@@ -28,8 +28,8 @@
         <local:MultiDoubleScaleConverter x:Key="MultiDoubleConverter" />
     </Window.Resources>
     <Grid>
-        <Grid Name="MainContainer" MouseWheel="Grid_OnMouseWheel">
-            <ItemsControl Name="MapContainer" ItemsSource="{Binding Mode=OneWay, Source={StaticResource Points}}">
+        <Grid Name="MainContainer" MouseWheel="Grid_OnMouseWheel" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <ItemsControl Width="600" Height="350" Name="MapContainer"  ItemsSource="{Binding Mode=OneWay, Source={StaticResource Points}}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="local:MapItem">
                         <Ellipse
@@ -59,7 +59,7 @@
                     <ItemsPanelTemplate>
                         <Canvas>
                             <Canvas.Background>
-                                <ImageBrush ImageSource="map.jpg" />
+                                <ImageBrush ImageSource="map.jpg" Stretch="UniformToFill" />
                             </Canvas.Background>
                         </Canvas>
                     </ItemsPanelTemplate>
